@@ -2,7 +2,7 @@ import axios from 'axios';
 import authService from './authService';
 import { getApiUrl } from '../utils/config';
 
-const API_URL = getApiUrl('/contracts');
+const API_URL = getApiUrl('/api/contract');
 
 const getAll = async () => {
   const res = await axios.get(API_URL, {
@@ -28,7 +28,7 @@ const create = async (data) => {
 };
 
 const update = async (id, data) => {
-  const res = await axios.put(`${API_URL}/${id}`, data, {
+  const res = await axios.put(`${API_URL}/${id}`, { ...data, id }, {
     headers: {
       Authorization: `Bearer ${authService.getToken()}`,
     },
@@ -43,4 +43,4 @@ const remove = async (id) => {
   return res.data;
 };
 
-export default { getAll, getById, create, update, remove }; 
+export default { getAll, getById, create, update, remove };

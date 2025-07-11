@@ -2,7 +2,7 @@ import axios from 'axios';
 import authService from './authService';
 import { getApiUrl } from '../utils/config';
 
-const API_URL = getApiUrl('/examinations');
+const API_URL = getApiUrl('/api/examination');
 
 const getAll = async () => {
   const res = await axios.get(API_URL, {
@@ -11,8 +11,28 @@ const getAll = async () => {
   return res.data;
 };
 
+const getAllExaminations = async () => {
+  const res = await axios.get(`${API_URL}/all`);
+  return res.data;
+};
+
 const getById = async (id) => {
   const res = await axios.get(`${API_URL}/${id}`, {
+    headers: { Authorization: `Bearer ${authService.getToken()}` },
+  });
+  return res.data;
+};
+
+const getPaged = async (pageNumber = 1, pageSize = 10, appointmentId = null, examType = null) => {
+  const params = new URLSearchParams({
+    pageNumber: pageNumber.toString(),
+    pageSize: pageSize.toString(),
+  });
+  
+  if (appointmentId) params.append('appointmentId', appointmentId.toString());
+  if (examType) params.append('examType', examType);
+  
+  const res = await axios.get(`${API_URL}/paged?${params}`, {
     headers: { Authorization: `Bearer ${authService.getToken()}` },
   });
   return res.data;
@@ -28,7 +48,7 @@ const create = async (data) => {
 };
 
 const update = async (id, data) => {
-  const res = await axios.put(`${API_URL}/${id}`, data, {
+  const res = await axios.put(`${API_URL}/${id}`, { ...data, id }, {
     headers: {
       Authorization: `Bearer ${authService.getToken()}`,
     },
@@ -43,4 +63,4 @@ const remove = async (id) => {
   return res.data;
 };
 
-export default { getAll, getById, create, update, remove }; 
+export default { getAll, getAllExaminations, getById, getPaged, create, update, remove };

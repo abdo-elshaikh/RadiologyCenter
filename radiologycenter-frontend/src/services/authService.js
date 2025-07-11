@@ -1,12 +1,10 @@
 import axios from 'axios';
 import { config, getApiUrl, log } from '../utils/config';
 
-const API_URL = getApiUrl('/auth/login');
-
 const login = async ({ username, password, keepLogin }) => {
   try {
     log('Attempting login for user:', username);
-    const response = await axios.post(API_URL, { username, password });
+    const response = await axios.post(getApiUrl('/api/auth/login'), { username, password });
     const data = response.data;
     
     // Store token
@@ -25,8 +23,8 @@ const login = async ({ username, password, keepLogin }) => {
     log('Login successful for user:', username);
     return data;
   } catch (error) {
-    log('Login failed:', error.response?.data?.message || error.message);
-    throw new Error(error.response?.data?.message || 'Invalid credentials');
+    log('Login failed:', error.response?.data?.error || error.message);
+    throw new Error(error.response?.data?.error || 'Invalid credentials');
   }
 };
 
@@ -58,36 +56,36 @@ const getUser = () => {
 const register = async (userData) => {
   try {
     log('Attempting user registration');
-    const response = await axios.post(getApiUrl('/auth/register'), userData);
+    const response = await axios.post(getApiUrl('/api/auth/register'), userData);
     log('Registration successful');
     return response.data;
   } catch (error) {
-    log('Registration failed:', error.response?.data?.message || error.message);
-    throw new Error(error.response?.data?.message || 'Registration failed');
+    log('Registration failed:', error.response?.data?.error || error.message);
+    throw new Error(error.response?.data?.error || 'Registration failed');
   }
 };
 
 const forgotPassword = async (email) => {
   try {
     log('Attempting password reset for email:', email);
-    const response = await axios.post(getApiUrl('/auth/forgot-password'), { email });
+    const response = await axios.post(getApiUrl('/api/auth/forgot-password'), { email });
     log('Password reset email sent');
     return response.data;
   } catch (error) {
-    log('Password reset failed:', error.response?.data?.message || error.message);
-    throw new Error(error.response?.data?.message || 'Failed to send reset email');
+    log('Password reset failed:', error.response?.data?.error || error.message);
+    throw new Error(error.response?.data?.error || 'Failed to send reset email');
   }
 };
 
 const resetPassword = async (token, password) => {
   try {
     log('Attempting password reset with token');
-    const response = await axios.post(getApiUrl('/auth/reset-password'), { token, password });
+    const response = await axios.post(getApiUrl('/api/auth/reset-password'), { token, password });
     log('Password reset successful');
     return response.data;
   } catch (error) {
-    log('Password reset failed:', error.response?.data?.message || error.message);
-    throw new Error(error.response?.data?.message || 'Password reset failed');
+    log('Password reset failed:', error.response?.data?.error || error.message);
+    throw new Error(error.response?.data?.error || 'Password reset failed');
   }
 };
 
@@ -95,14 +93,14 @@ const updateProfile = async (profileData) => {
   try {
     const token = getToken();
     log('Attempting profile update');
-    const response = await axios.put(getApiUrl('/auth/profile'), profileData, {
+    const response = await axios.put(getApiUrl('/api/auth/profile'), profileData, {
       headers: { Authorization: `Bearer ${token}` }
     });
     log('Profile update successful');
     return response.data;
   } catch (error) {
-    log('Profile update failed:', error.response?.data?.message || error.message);
-    throw new Error(error.response?.data?.message || 'Profile update failed');
+    log('Profile update failed:', error.response?.data?.error || error.message);
+    throw new Error(error.response?.data?.error || 'Profile update failed');
   }
 };
 
@@ -110,14 +108,14 @@ const changePassword = async (passwordData) => {
   try {
     const token = getToken();
     log('Attempting password change');
-    const response = await axios.put(getApiUrl('/auth/change-password'), passwordData, {
+    const response = await axios.post(getApiUrl('/api/auth/change-password'), passwordData, {
       headers: { Authorization: `Bearer ${token}` }
     });
     log('Password change successful');
     return response.data;
   } catch (error) {
-    log('Password change failed:', error.response?.data?.message || error.message);
-    throw new Error(error.response?.data?.message || 'Password change failed');
+    log('Password change failed:', error.response?.data?.error || error.message);
+    throw new Error(error.response?.data?.error || 'Password change failed');
   }
 };
 
@@ -131,4 +129,4 @@ export default {
   resetPassword, 
   updateProfile, 
   changePassword 
-}; 
+};

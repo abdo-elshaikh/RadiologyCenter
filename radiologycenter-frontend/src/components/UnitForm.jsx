@@ -2,14 +2,21 @@ import React, { useState, useEffect } from 'react';
 
 const defaultValues = {
   name: '',
-  location: '',
+  description: '',
 };
 
 const UnitForm = ({ initialValues, onSubmit, onCancel, loading }) => {
   const [values, setValues] = useState(defaultValues);
 
   useEffect(() => {
-    setValues(initialValues || defaultValues);
+    if (initialValues) {
+      setValues({
+        name: initialValues.name || '',
+        description: initialValues.description || '',
+      });
+    } else {
+      setValues(defaultValues);
+    }
   }, [initialValues]);
 
   const handleChange = (e) => {
@@ -34,11 +41,11 @@ const UnitForm = ({ initialValues, onSubmit, onCancel, loading }) => {
         />
       </div>
       <div className="form-control">
-        <label className="label">Location</label>
-        <input
-          name="location"
-          className="input input-bordered"
-          value={values.location}
+        <label className="label">Description</label>
+        <textarea
+          name="description"
+          className="textarea textarea-bordered"
+          value={values.description}
           onChange={handleChange}
         />
       </div>
@@ -52,4 +59,4 @@ const UnitForm = ({ initialValues, onSubmit, onCancel, loading }) => {
   );
 };
 
-export default UnitForm; 
+export default UnitForm;

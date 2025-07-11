@@ -2,10 +2,17 @@ import axios from 'axios';
 import authService from './authService';
 import { getApiUrl } from '../utils/config';
 
-const API_URL = getApiUrl('/users');
+const API_URL = getApiUrl('/api/user');
 
 const getAll = async () => {
   const res = await axios.get(API_URL, {
+    headers: { Authorization: `Bearer ${authService.getToken()}` },
+  });
+  return res.data;
+};
+
+const getById = async (id) => {
+  const res = await axios.get(`${API_URL}/${id}`, {
     headers: { Authorization: `Bearer ${authService.getToken()}` },
   });
   return res.data;
@@ -41,8 +48,9 @@ const deactivate = async (id) => {
 
 export default {
   getAll,
+  getById,
   update,
   remove,
   activate,
   deactivate,
-}; 
+};

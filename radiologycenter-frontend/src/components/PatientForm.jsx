@@ -2,17 +2,30 @@ import React, { useState, useEffect } from 'react';
 import Input from './common/Input';
 
 const defaultValues = {
-  firstName: '',
-  lastName: '',
-  email: '',
-  phoneNumber: '',
+  name: '',
+  phone: '',
+  birthDate: '',
+  gender: '',
+  address: '',
+  notes: '',
 };
 
 const PatientForm = ({ initialValues, onSubmit, onCancel, loading }) => {
   const [values, setValues] = useState(defaultValues);
 
   useEffect(() => {
-    setValues(initialValues || defaultValues);
+    if (initialValues) {
+      setValues({
+        name: initialValues.fullName || initialValues.name || '',
+        phone: initialValues.phone || '',
+        birthDate: initialValues.birthDate ? initialValues.birthDate.split('T')[0] : '',
+        gender: initialValues.gender || '',
+        address: initialValues.address || '',
+        notes: initialValues.notes || '',
+      });
+    } else {
+      setValues(defaultValues);
+    }
   }, [initialValues]);
 
   const handleChange = (e) => {
@@ -27,38 +40,62 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, loading }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="form-control">
-        <label className="label">First Name</label>
+        <label className="label">Full Name</label>
         <Input
-          name="firstName"
-          value={values.firstName}
+          name="name"
+          value={values.name}
           onChange={handleChange}
           required
         />
       </div>
       <div className="form-control">
-        <label className="label">Last Name</label>
+        <label className="label">Phone</label>
         <Input
-          name="lastName"
-          value={values.lastName}
+          name="phone"
+          value={values.phone}
           onChange={handleChange}
           required
         />
       </div>
       <div className="form-control">
-        <label className="label">Email</label>
+        <label className="label">Birth Date</label>
         <Input
-          name="email"
-          type="email"
-          value={values.email}
+          name="birthDate"
+          type="date"
+          value={values.birthDate}
           onChange={handleChange}
           required
         />
       </div>
       <div className="form-control">
-        <label className="label">Phone Number</label>
+        <label className="label">Gender</label>
+        <select
+          name="gender"
+          className="select select-bordered"
+          value={values.gender}
+          onChange={handleChange}
+          required
+        >
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div className="form-control">
+        <label className="label">Address</label>
         <Input
-          name="phoneNumber"
-          value={values.phoneNumber}
+          name="address"
+          value={values.address}
+          onChange={handleChange}
+        />
+      </div>
+      <div className="form-control">
+        <label className="label">Notes</label>
+        <textarea
+          name="notes"
+          className="textarea textarea-bordered"
+          value={values.notes}
           onChange={handleChange}
         />
       </div>
@@ -72,4 +109,4 @@ const PatientForm = ({ initialValues, onSubmit, onCancel, loading }) => {
   );
 };
 
-export default PatientForm; 
+export default PatientForm;
